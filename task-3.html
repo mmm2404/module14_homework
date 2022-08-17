@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>task 3</title>
+    <style>
+        .post_info{
+    width:100px;
+    height: 35px;
+    color:aliceblue;
+    font-size: 13px;
+    background-color: blue;
+    cursor: pointer;
+    transition: 0.3s;
+}
+  .post_info:hover{
+    opacity: 0.7;
+    transform: scale(1.05);
+    box-shadow: 0px 3px 7px 3px rgba(141,150,178,.3);;
+  }
+.type_info{
+    height: 30px;
+    width: 270px;
+    border:2px solid blue;
+}
+
+.card {
+    width: 200px;
+    margin: 20px;
+  }
+  .card-image {
+    display: block;
+    width: 200px;
+    height: 150px;
+  }
+    </style>
+</head>
+<body>
+    <label for="input">Enter the number</label><br>
+    <input placeholder="between 1 and 10 please" type="number" id="input"class="type_info">
+    <button type="submit"  id="button" class="post_info">SEND</button>
+    <div class="get_info">The result will be displayed here! </div>
+
+    <script>
+
+const inputNode = document.querySelector(".type_info");
+const btnNode = document.querySelector(".post_info");
+const resultNode = document.querySelector(".get_info");
+
+const url = 'https://picsum.photos/v2/list?limit='
+
+
+function checkValue (url){
+    const inputValue = inputNode.value;
+
+    if (1 <= inputValue && inputValue <= 10) {
+        const limit = url + inputValue ;
+        makeRequest(limit);
+    }
+    else{
+        resultNode.innerHTML = `Число вне диапазона от 1 до 10`
+    }
+}
+
+function makeRequest (limit){
+  const xhr = new XMLHttpRequest();
+  xhr.open('GET', limit, true);
+  xhr.onload = function () {
+    if (xhr.status !== 200) {
+      console.log('Status is', xhr.status)
+    } else {
+      const response = JSON.parse(xhr.response)
+      displayResult(response)
+    }
+     xhr.onerror = function() {
+      console.log('Error. Status is', xhr.status)
+    }
+  }
+  xhr.send()
+}
+
+function displayResult(apiData){
+  const resultData = apiData.map(
+    item =>
+      `<div class="card"><img src="${item.download_url}" class="card-image"/><p>${item.author}</p></div>`,
+  )
+  resultNode.innerHTML = resultData.join('')
+};
+
+
+btnNode.addEventListener('click', () => {
+    checkValue(url);
+});
+    </script>
+</body>
+</html>

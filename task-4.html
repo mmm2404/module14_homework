@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+    .post_info{
+    width:100px;
+    height: 35px;
+    color:aliceblue;
+    font-size: 13px;
+    background-color: blue;
+    cursor: pointer;
+    transition: 0.3s;
+}
+  .post_info:hover{
+    opacity: 0.7;
+    transform: scale(1.05);
+    box-shadow: 0px 3px 7px 3px rgba(141,150,178,.3);;
+  }
+.type_info{
+    margin-top: 20px;
+    margin-bottom: 20px;
+    height: 30px;
+    width: 270px;
+    border:2px solid blue;
+}
+</style>
+</head>
+<body>
+    <label for="input">Please provide the information below</label><br>
+    <input placeholder="Enter the number" type="number" id="input" class="type_info one">
+    <input placeholder="Enter the number"type="number" class="type_info two">
+    <button type="submit" id="button" class="post_info">SEND</button>
+    <div class="get_info">The result will be displayed here! </div>
+    <script>
+        let inputNodeOne = document.querySelector(".one");
+        let inputNodeTwo = document.querySelector(".two");
+        let btnNode = document.querySelector(".post_info");
+        const resultNode = document.querySelector(".get_info");
+
+
+btnNode.addEventListener('click', () => {
+    let inputOne = inputNodeOne.value;
+    let inputTwo = inputNodeTwo.value;
+
+        if((100 <= inputOne && inputOne <= 300 ) && (100 <= inputTwo && inputTwo <= 300 )){
+           fetch(`https://picsum.photos/${inputOne}/${inputTwo}`)
+           .then((response) => {
+            resultNode.innerHTML = `<img src=${response.url}>`
+           })
+           .catch(() => {
+                  resultNode.innerHTML = `error`;
+               })
+         } else {
+            resultNode.innerHTML = `Одно из чисел вне диапaзона от 100 до 300`;
+         }
+        });
+
+    </script>
+
+</body>
+</html>

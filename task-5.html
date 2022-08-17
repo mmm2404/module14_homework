@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task 5</title>
+    <style>
+.wrapper{
+    text-align: center;
+}
+    .btn{
+     margin-bottom: 20px;
+     width:100px;
+     height: 35px;
+     color:aliceblue;
+     font-size: 13px;
+     background-color: blue;
+     cursor: pointer;
+     transition: 0.3s;
+}
+  .btn:hover{
+ 
+    transform: scale(1.05);
+    box-shadow: 0px 3px 7px 3px rgba(141,150,178,.3);;
+  }
+    .page,.limit{
+     margin-top: 20px;
+     margin-bottom: 20px;
+     height: 30px;
+     width: 270px;
+     border:2px solid blue;
+}
+
+
+</style>
+</head>
+<body>
+    <div class="wrapper">
+        <div id="myForm">
+            <label for="input">НОМЕР СТРАНИЦЫ</label><br>
+            <input type="number" id="input" class="page"><br>
+            <label for="input">ЛИМИТ</label><br>
+            <input type="number" id="input" class="limit"><br>
+            <button type="submit" id="button" class="btn">ЗАПРОС</button>
+        </div>
+        <div id="result">Здесь будет результат запроса</div>       
+    </div>
+
+<script>
+    
+        const pageInput = document.querySelector(".page");
+        const limitInput = document.querySelector(".limit");
+        const btn = document.getElementById("button");
+        const outputNode = document.getElementById("result");
+
+        
+        function validateInput(value, range){
+            return typeof value === "number" && !isNaN(value) && value >= range[0] && value <= range[1];
+
+        }
+
+        function sendRequest(page, limit) {
+            let url = `https://picsum.photos/v2/list?page=${page}&limit=${limit}`;
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', url);
+            xhr.onload = function () {
+                let response = JSON.parse(xhr.response);
+                let images = ``;
+                localStorage.clear();
+                for (let img of response) {
+                    images += `
+                    <img src="${img.download_url}" width="300px" style="margin: 10px;">
+                     `;
+                }
+                localStorage.setItem("images", images);
+                resultNode.innerHTML = images;
+            }
+            xhr.send();
+        }
+
+      
+        btn.addEventListener('click', () => {
+            let page = +pageInput.value;
+            let limit = +limitInput.value;
+            let range = [1, 10];
+            if(validateInput(page, range) && validateInput(limit, range)){
+                sendRequest(page, limit)
+            } else if(validateInput(page, range)){
+                outputNode.innerText = "Лимит вне диапазона от 1 до 10";
+            } else if(validateInput(limit, range)){
+                outputNode.innerText = "Номер страницы вне диапазона от 1 до 10";
+            } else {
+                outputNode.innerText = "Номер страницы и лимит вне диапазона от 1 до 10";
+            }
+        });
+    
+  
+document.addEventListener("DOMContentLoaded", () => {
+    let imagesLocal = localStorage.getItem("images");
+            if(imagesLocal){
+                outputNode.innerHTML = imagesLocal;
+        }
+
+});
+
+</script>
+
+</body>
+</html>
